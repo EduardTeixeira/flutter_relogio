@@ -1,122 +1,196 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_relogio/widgets/input.widget.dart';
+import 'package:percent_indicator/circular_percent_indicator.dart';
 
-void main() {
-  runApp(const MyApp());
-}
+void main() => runApp(
+  MaterialApp(debugShowCheckedModeBanner: false, home: CountDownTimer()),
+);
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  // This widget is the root of your application.
+class CountDownTimer extends StatefulWidget {
+  const CountDownTimer({super.key});
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
-    );
-  }
+  CountDownTimerState createState() => CountDownTimerState();
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+class CountDownTimerState extends State<CountDownTimer> {
+  final TextEditingController exerciseCtrl = TextEditingController(text: "60");
+  final TextEditingController restCtrl = TextEditingController(text: "45");
+  bool timeToRest = true;
+  int timeSeconds = 0;
 
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
+  double percent = 0.0;
+  double slicePercent = 0.0;
+  late Timer timer;
 
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
+  void startTimer() {
+    setTimeSeconds();
 
-  final String title;
+    timer = Timer.periodic(Duration(seconds: 1), (timer) {
+      setState(() {
+        print('\n\nPercent ::: $percent');
+        print('slicePercent ::: $slicePercent');
+        print('exerciseCtrl ::: $exerciseCtrl');
+        print('exerciseCtrl ::: ${exerciseCtrl.text}');
+        print('restCtrl ::: $restCtrl');
+        print('restCtrl ::: ${restCtrl.text}');
 
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
+        if (timeSeconds > 0) {
+          print('IF --> timeSeconds ::: $timeSeconds');
+          timeSeconds--;
+          calculatePercent();
+        } else {
+          print('ELSE --> timeSeconds ::: $timeSeconds');
+          timeToRest = !timeToRest;
+          nextTimer();
+          //timer.cancel();
+        }
+      });
     });
   }
 
+  void setTimeSeconds() {
+    if (timeToRest) {
+      timeSeconds = int.parse(restCtrl.text);
+    } else {
+      timeSeconds = int.parse(exerciseCtrl.text);
+    }
+    slicePercent = 1.0 / timeSeconds;
+  }
+
+  void calculatePercent() {
+    double futurePercent = percent + slicePercent;
+    if (futurePercent > 1.0) {
+      percent = 1.0;
+    } else {
+      percent += slicePercent;
+    }
+  }
+
+  void nextTimer() {
+    percent = 0.0;
+    setTimeSeconds();
+  }
+
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-    return Scaffold(
-      appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text('You have pushed the button this many times:'),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Color(0xFF1542BF), Color(0xFF51A8FF)],
+              begin: FractionalOffset(0.5, 1),
             ),
-          ],
+          ),
+          width: double.infinity,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(top: 10.0),
+                child: Text(
+                  "Pomodoro",
+                  style: TextStyle(color: Colors.white, fontSize: 50.0),
+                ),
+              ),
+              Expanded(
+                child: CircularPercentIndicator(
+                  percent: percent,
+                  animation: true,
+                  lineWidth: 20.0,
+                  circularStrokeCap: CircularStrokeCap.round,
+                  reverse: false,
+                  animateFromLastPercent: true,
+                  radius: 180.0,
+                  progressColor: Colors.white,
+                  center: Text(
+                    "$timeSeconds seg",
+                    style: TextStyle(color: Colors.white, fontSize: 40.0),
+                  ),
+                ),
+              ),
+
+              SizedBox(height: 20.0),
+
+              Expanded(
+                child: Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(30.0),
+                      topRight: Radius.circular(30.0),
+                    ),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                      top: 30.0,
+                      left: 5.0,
+                      right: 5.0,
+                    ),
+                    child: Column(
+                      children: <Widget>[
+                        Expanded(
+                          child: Row(
+                            children: <Widget>[
+                              Expanded(
+                                child: Column(
+                                  children: <Widget>[
+                                    Text(
+                                      "Descanso",
+                                      style: TextStyle(fontSize: 25.0),
+                                    ),
+                                    SizedBox(height: 10.0),
+                                    Input(ctrl: restCtrl),
+                                  ],
+                                ),
+                              ),
+                              Expanded(
+                                child: Column(
+                                  children: <Widget>[
+                                    Text(
+                                      "Exercício",
+                                      style: TextStyle(fontSize: 25.0),
+                                    ),
+                                    SizedBox(height: 10.0),
+                                    Input(ctrl: exerciseCtrl),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.symmetric(vertical: 28.0),
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.blue,
+                            ),
+                            onPressed: startTimer,
+                            child: Padding(
+                              padding: EdgeInsets.all(14.0),
+                              child: Text(
+                                "Iniciar",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 25.0,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
