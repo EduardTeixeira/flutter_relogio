@@ -16,34 +16,25 @@ class CountDownTimer extends StatefulWidget {
 class CountDownTimerState extends State<CountDownTimer> {
   final TextEditingController exerciseCtrl = TextEditingController(text: "60");
   final TextEditingController restCtrl = TextEditingController(text: "45");
+
+  late Timer timer;
   bool timeToRest = true;
   int timeSeconds = 0;
 
+  final double maxPercent = 1.0;
   double percent = 0.0;
   double slicePercent = 0.0;
-  late Timer timer;
 
   void startTimer() {
     setTimeSeconds();
-
     timer = Timer.periodic(Duration(seconds: 1), (timer) {
       setState(() {
-        print('\n\nPercent ::: $percent');
-        print('slicePercent ::: $slicePercent');
-        print('exerciseCtrl ::: $exerciseCtrl');
-        print('exerciseCtrl ::: ${exerciseCtrl.text}');
-        print('restCtrl ::: $restCtrl');
-        print('restCtrl ::: ${restCtrl.text}');
-
         if (timeSeconds > 0) {
-          print('IF --> timeSeconds ::: $timeSeconds');
           timeSeconds--;
           calculatePercent();
         } else {
-          print('ELSE --> timeSeconds ::: $timeSeconds');
           timeToRest = !timeToRest;
           nextTimer();
-          //timer.cancel();
         }
       });
     });
@@ -55,13 +46,13 @@ class CountDownTimerState extends State<CountDownTimer> {
     } else {
       timeSeconds = int.parse(exerciseCtrl.text);
     }
-    slicePercent = 1.0 / timeSeconds;
+    slicePercent = maxPercent / timeSeconds;
   }
 
   void calculatePercent() {
     double futurePercent = percent + slicePercent;
-    if (futurePercent > 1.0) {
-      percent = 1.0;
+    if (futurePercent > maxPercent) {
+      percent = maxPercent;
     } else {
       percent += slicePercent;
     }
