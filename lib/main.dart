@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_relogio/widgets/input.widget.dart';
+import 'package:flutter_relogio/widgets/text-info.widget.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
 void main() => runApp(
@@ -14,26 +15,34 @@ class CountDownTimer extends StatefulWidget {
 }
 
 class CountDownTimerState extends State<CountDownTimer> {
+  LinearGradient backgroundColor = LinearGradient(
+    colors: [Color(0xFF1542BF), Color(0xFF51A8FF)],
+    begin: FractionalOffset(0.5, 1),
+  );
+  String centralText = "Pomodoro";
   final TextEditingController exerciseCtrl = TextEditingController(text: "60");
   final TextEditingController restCtrl = TextEditingController(text: "45");
-
-  late Timer timer;
+  Timer? timer;
   bool timeToRest = true;
   int timeSeconds = 0;
-
   final double maxPercent = 1.0;
   double percent = 0.0;
   double slicePercent = 0.0;
 
-  void startTimer() {
+  void startTimer(bool isStart) {
+    if (timer != null && timer!.isActive) {
+      timer!.cancel();
+    }
+    if (isStart) {
+      timeToRest = true;
+    }
     setTimeSeconds();
-    timer = Timer.periodic(Duration(seconds: 1), (timer) {
+    timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       setState(() {
         if (timeSeconds > 0) {
           timeSeconds--;
           calculatePercent();
         } else {
-          timeToRest = !timeToRest;
           nextTimer();
         }
       });
@@ -43,10 +52,21 @@ class CountDownTimerState extends State<CountDownTimer> {
   void setTimeSeconds() {
     if (timeToRest) {
       timeSeconds = int.parse(restCtrl.text);
+      backgroundColor = LinearGradient(
+        colors: [Colors.green, Colors.lightGreen],
+        begin: FractionalOffset(0.5, 1),
+      );
+      centralText = "Descanso";
     } else {
       timeSeconds = int.parse(exerciseCtrl.text);
+      backgroundColor = LinearGradient(
+        colors: [Colors.red, Colors.orange],
+        begin: FractionalOffset(0.5, 1),
+      );
+      centralText = "Exercício";
     }
     slicePercent = maxPercent / timeSeconds;
+    percent = 0.0;
   }
 
   void calculatePercent() {
@@ -59,7 +79,7 @@ class CountDownTimerState extends State<CountDownTimer> {
   }
 
   void nextTimer() {
-    percent = 0.0;
+    timeToRest = !timeToRest;
     setTimeSeconds();
   }
 
@@ -67,14 +87,9 @@ class CountDownTimerState extends State<CountDownTimer> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.black,
         body: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Color(0xFF1542BF), Color(0xFF51A8FF)],
-              begin: FractionalOffset(0.5, 1),
-            ),
-          ),
+          decoration: BoxDecoration(gradient: backgroundColor),
           width: double.infinity,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -82,35 +97,27 @@ class CountDownTimerState extends State<CountDownTimer> {
             children: <Widget>[
               Padding(
                 padding: const EdgeInsets.only(top: 10.0),
-                child: Text(
-                  "Pomodoro",
-                  style: TextStyle(color: Colors.white, fontSize: 50.0),
-                ),
+                child: TextInfo(label: centralText, fontSize: 50.0),
               ),
               Expanded(
                 child: CircularPercentIndicator(
                   percent: percent,
                   animation: true,
+                  animateFromLastPercent: true,
+                  reverse: false,
                   lineWidth: 20.0,
                   circularStrokeCap: CircularStrokeCap.round,
-                  reverse: false,
-                  animateFromLastPercent: true,
                   radius: 180.0,
                   progressColor: Colors.white,
-                  center: Text(
-                    "$timeSeconds seg",
-                    style: TextStyle(color: Colors.white, fontSize: 40.0),
-                  ),
+                  center: TextInfo(label: "$timeSeconds seg", fontSize: 50.0),
                 ),
               ),
-
               SizedBox(height: 20.0),
-
               Expanded(
                 child: Container(
                   width: double.infinity,
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: Colors.black,
                     borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(30.0),
                       topRight: Radius.circular(30.0),
@@ -119,8 +126,9 @@ class CountDownTimerState extends State<CountDownTimer> {
                   child: Padding(
                     padding: const EdgeInsets.only(
                       top: 30.0,
-                      left: 5.0,
-                      right: 5.0,
+                      left: 10.0,
+                      right: 10.0,
+                      bottom: 10.0,
                     ),
                     child: Column(
                       children: <Widget>[
@@ -130,11 +138,8 @@ class CountDownTimerState extends State<CountDownTimer> {
                               Expanded(
                                 child: Column(
                                   children: <Widget>[
-                                    Text(
-                                      "Descanso",
-                                      style: TextStyle(fontSize: 25.0),
-                                    ),
-                                    SizedBox(height: 10.0),
+                                    TextInfo(label: "Descanso", fontSize: 25.0),
+                                    SizedBox(height: 5.0),
                                     Input(ctrl: restCtrl),
                                   ],
                                 ),
@@ -142,11 +147,11 @@ class CountDownTimerState extends State<CountDownTimer> {
                               Expanded(
                                 child: Column(
                                   children: <Widget>[
-                                    Text(
-                                      "Exercício",
-                                      style: TextStyle(fontSize: 25.0),
+                                    TextInfo(
+                                      label: "Exercício",
+                                      fontSize: 25.0,
                                     ),
-                                    SizedBox(height: 10.0),
+                                    SizedBox(height: 5.0),
                                     Input(ctrl: exerciseCtrl),
                                   ],
                                 ),
@@ -155,21 +160,17 @@ class CountDownTimerState extends State<CountDownTimer> {
                           ),
                         ),
                         Padding(
-                          padding: EdgeInsets.symmetric(vertical: 28.0),
+                          padding: EdgeInsets.symmetric(vertical: 10.0),
                           child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.blue,
                             ),
-                            onPressed: startTimer,
+                            onPressed: () {
+                              startTimer(true);
+                            },
                             child: Padding(
                               padding: EdgeInsets.all(14.0),
-                              child: Text(
-                                "Iniciar",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 25.0,
-                                ),
-                              ),
+                              child: TextInfo(label: "Iniciar", fontSize: 25.0),
                             ),
                           ),
                         ),
