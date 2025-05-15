@@ -109,7 +109,70 @@ class CountDownTimerState extends State<CountDownTimer> {
                   circularStrokeCap: CircularStrokeCap.round,
                   radius: 180.0,
                   progressColor: Colors.white,
-                  center: TextInfo(label: "$timeSeconds seg", fontSize: 50.0),
+                  center: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      TextInfo(label: "$timeSeconds seg", fontSize: 50.0),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Ink(
+                                decoration: const ShapeDecoration(
+                                  color: Colors.black,
+                                  shape: CircleBorder(),
+                                ),
+                                child: IconButton(
+                                  icon: const Icon(Icons.play_arrow),
+                                  iconSize: 32,
+                                  color: Colors.white,
+                                  tooltip: 'Play timer.',
+                                  onPressed: () {
+                                    print('logica para o play_arrow');
+                                    print("timer: ${timer}");
+                                  },
+                                ),
+                              ),
+                              const SizedBox(width: 10),
+                              Ink(
+                                decoration: const ShapeDecoration(
+                                  color: Colors.black,
+                                  shape: CircleBorder(),
+                                ),
+                                child: IconButton(
+                                  icon: const Icon(Icons.pause),
+                                  iconSize: 32,
+                                  color: Colors.white,
+                                  tooltip: 'Pause timer.',
+                                  onPressed: () {
+                                    print('logica para o pause');
+                                  },
+                                ),
+                              ),
+                              const SizedBox(width: 10),
+                              Ink(
+                                decoration: const ShapeDecoration(
+                                  color: Colors.black,
+                                  shape: CircleBorder(),
+                                ),
+                                child: IconButton(
+                                  icon: const Icon(Icons.refresh),
+                                  iconSize: 32,
+                                  color: Colors.white,
+                                  tooltip: 'Reset timer.',
+                                  onPressed: () {
+                                    print('logica para o refresh');
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
               SizedBox(height: 20.0),
