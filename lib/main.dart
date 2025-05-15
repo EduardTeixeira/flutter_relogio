@@ -148,6 +148,7 @@ class CountDownTimerState extends State<CountDownTimer> {
                                   tooltip: 'Pause timer.',
                                   onPressed: () {
                                     print('logica para o pause');
+                                    print("timer: ${timer}");
                                   },
                                 ),
                               ),
