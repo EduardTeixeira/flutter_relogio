@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_relogio/enums/timer_action.dart';
+import 'package:flutter_relogio/widgets/icon-timer.widget.dart';
 import 'package:flutter_relogio/widgets/input.widget.dart';
 import 'package:flutter_relogio/widgets/text-info.widget.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
@@ -119,54 +121,19 @@ class CountDownTimerState extends State<CountDownTimer> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
-                              Ink(
-                                decoration: const ShapeDecoration(
-                                  color: Colors.black,
-                                  shape: CircleBorder(),
-                                ),
-                                child: IconButton(
-                                  icon: const Icon(Icons.play_arrow),
-                                  iconSize: 32,
-                                  color: Colors.white,
-                                  tooltip: 'Play timer.',
-                                  onPressed: () {
-                                    print('logica para o play_arrow');
-                                    print("timer: ${timer}");
-                                  },
-                                ),
+                              IconTimer(
+                                icon: const Icon(Icons.play_arrow),
+                                timerAction: TimerAction.play,
                               ),
                               const SizedBox(width: 10),
-                              Ink(
-                                decoration: const ShapeDecoration(
-                                  color: Colors.black,
-                                  shape: CircleBorder(),
-                                ),
-                                child: IconButton(
-                                  icon: const Icon(Icons.pause),
-                                  iconSize: 32,
-                                  color: Colors.white,
-                                  tooltip: 'Pause timer.',
-                                  onPressed: () {
-                                    print('logica para o pause');
-                                    print("timer: ${timer}");
-                                  },
-                                ),
+                              IconTimer(
+                                icon: const Icon(Icons.pause),
+                                timerAction: TimerAction.pause,
                               ),
                               const SizedBox(width: 10),
-                              Ink(
-                                decoration: const ShapeDecoration(
-                                  color: Colors.black,
-                                  shape: CircleBorder(),
-                                ),
-                                child: IconButton(
-                                  icon: const Icon(Icons.refresh),
-                                  iconSize: 32,
-                                  color: Colors.white,
-                                  tooltip: 'Reset timer.',
-                                  onPressed: () {
-                                    print('logica para o refresh');
-                                  },
-                                ),
+                              IconTimer(
+                                icon: const Icon(Icons.refresh),
+                                timerAction: TimerAction.restore,
                               ),
                             ],
                           ),
