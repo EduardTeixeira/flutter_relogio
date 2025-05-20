@@ -17,6 +17,8 @@ class CountDownTimer extends StatefulWidget {
 }
 
 class CountDownTimerState extends State<CountDownTimer> {
+  final _labelSize = 20.0;
+
   LinearGradient backgroundColor = LinearGradient(
     colors: [Color(0xFF1542BF), Color(0xFF51A8FF)],
     begin: FractionalOffset(0.5, 1),
@@ -107,14 +109,17 @@ class CountDownTimerState extends State<CountDownTimer> {
           decoration: BoxDecoration(gradient: backgroundColor),
           width: double.infinity,
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(top: 10.0),
-                child: TextInfo(label: centralText, fontSize: 50.0),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 5.0),
+                  child: TextInfo(label: centralText, fontSize: 50.0),
+                ),
               ),
               Expanded(
+                flex: 5,
                 child: CircularPercentIndicator(
                   percent: percent,
                   animation: true,
@@ -162,8 +167,9 @@ class CountDownTimerState extends State<CountDownTimer> {
                   ),
                 ),
               ),
-              SizedBox(height: 20.0),
+              SizedBox(height: 10.0),
               Expanded(
+                flex: 3,
                 child: Container(
                   width: double.infinity,
                   decoration: BoxDecoration(
@@ -182,35 +188,36 @@ class CountDownTimerState extends State<CountDownTimer> {
                     ),
                     child: Column(
                       children: <Widget>[
-                        Expanded(
-                          child: Row(
-                            children: <Widget>[
-                              Expanded(
-                                child: Column(
-                                  children: <Widget>[
-                                    TextInfo(label: "Descanso", fontSize: 25.0),
-                                    SizedBox(height: 5.0),
-                                    Input(ctrl: restCtrl),
-                                  ],
-                                ),
+                        Row(
+                          children: <Widget>[
+                            Expanded(
+                              child: Column(
+                                children: <Widget>[
+                                  TextInfo(
+                                    label: "Descanso",
+                                    fontSize: _labelSize,
+                                  ),
+                                  SizedBox(height: 5.0),
+                                  Input(ctrl: restCtrl),
+                                ],
                               ),
-                              Expanded(
-                                child: Column(
-                                  children: <Widget>[
-                                    TextInfo(
-                                      label: "Exercício",
-                                      fontSize: 25.0,
-                                    ),
-                                    SizedBox(height: 5.0),
-                                    Input(ctrl: exerciseCtrl),
-                                  ],
-                                ),
+                            ),
+                            Expanded(
+                              child: Column(
+                                children: <Widget>[
+                                  TextInfo(
+                                    label: "Exercício",
+                                    fontSize: _labelSize,
+                                  ),
+                                  SizedBox(height: 5.0),
+                                  Input(ctrl: exerciseCtrl),
+                                ],
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
-                        Padding(
-                          padding: EdgeInsets.symmetric(vertical: 10.0),
+                        SizedBox(height: 10),
+                        Center(
                           child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.blue,
@@ -220,7 +227,10 @@ class CountDownTimerState extends State<CountDownTimer> {
                             },
                             child: Padding(
                               padding: EdgeInsets.all(14.0),
-                              child: TextInfo(label: "Iniciar", fontSize: 25.0),
+                              child: TextInfo(
+                                label: "Iniciar",
+                                fontSize: _labelSize,
+                              ),
                             ),
                           ),
                         ),
