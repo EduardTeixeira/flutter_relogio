@@ -25,6 +25,7 @@ class CountDownTimerState extends State<CountDownTimer> {
   final TextEditingController exerciseCtrl = TextEditingController(text: "60");
   final TextEditingController restCtrl = TextEditingController(text: "45");
   Timer? timer;
+  bool timerActive = false;
   bool timeToRest = true;
   int timeSeconds = 0;
   final double maxPercent = 1.0;
@@ -39,6 +40,7 @@ class CountDownTimerState extends State<CountDownTimer> {
       timeToRest = true;
     }
     setTimeSeconds();
+    timerActive = true;
     timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       setState(() {
         if (timeSeconds > 0) {
@@ -85,6 +87,17 @@ class CountDownTimerState extends State<CountDownTimer> {
     setTimeSeconds();
   }
 
+  action(timerAction) {
+    switch (timerAction) {
+      case TimerAction.pause:
+        print('TimerAction.pause');
+      case TimerAction.play:
+        print('TimerAction.play');
+      case TimerAction.restore:
+        print('TimerAction.restore');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -120,22 +133,28 @@ class CountDownTimerState extends State<CountDownTimer> {
                         children: <Widget>[
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              IconTimer(
-                                icon: const Icon(Icons.play_arrow),
-                                timerAction: TimerAction.play,
-                              ),
-                              const SizedBox(width: 10),
-                              IconTimer(
-                                icon: const Icon(Icons.pause),
-                                timerAction: TimerAction.pause,
-                              ),
-                              const SizedBox(width: 10),
-                              IconTimer(
-                                icon: const Icon(Icons.refresh),
-                                timerAction: TimerAction.restore,
-                              ),
-                            ],
+                            children:
+                                timerActive
+                                    ? [
+                                      IconTimer(
+                                        icon: const Icon(Icons.pause),
+                                        timerAction: TimerAction.pause,
+                                        onPressed: action,
+                                      ),
+                                      const SizedBox(width: 10),
+                                      IconTimer(
+                                        icon: const Icon(Icons.refresh),
+                                        timerAction: TimerAction.restore,
+                                        onPressed: action,
+                                      ),
+                                    ]
+                                    : [
+                                      IconTimer(
+                                        icon: const Icon(Icons.play_arrow),
+                                        timerAction: TimerAction.play,
+                                        onPressed: action,
+                                      ),
+                                    ],
                           ),
                         ],
                       ),
