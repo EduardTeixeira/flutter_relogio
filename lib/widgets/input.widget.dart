@@ -15,14 +15,14 @@ class Input extends StatelessWidget {
         controller: ctrl,
         keyboardType: TextInputType.number,
         textAlign: TextAlign.center,
-        style: TextStyle(color: Colors.white, fontSize: 35),
+        style: TextStyle(color: Colors.white, fontSize: 15),
         inputFormatters: <TextInputFormatter>[
           FilteringTextInputFormatter.digitsOnly,
         ],
         decoration: InputDecoration(
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(20.0),
-            borderSide: BorderSide(color: Colors.blueGrey, width: 2.0),
+            borderSide: BorderSide(color: Colors.white, width: 2.0),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(20.0),

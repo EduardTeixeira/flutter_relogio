@@ -46,13 +46,13 @@ class IconTimer extends StatelessWidget {
         icon: icon,
         iconSize: 32,
         color: Colors.white,
-        tooltip: 'Play timer.',
+        tooltip: '${snackBarAction()} timer',
         onPressed: () {
           onPressed(timerAction);
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(snackBarText()),
-              duration: Duration(seconds: 2),
+              duration: Duration(seconds: 1),
               action: SnackBarAction(
                 label: snackBarAction(),
                 backgroundColor: Colors.white,

@@ -112,14 +112,9 @@ class CountDownTimerState extends State<CountDownTimer> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
+              TextInfo(label: centralText, fontSize: 50.0),
               Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 5.0),
-                  child: TextInfo(label: centralText, fontSize: 50.0),
-                ),
-              ),
-              Expanded(
-                flex: 5,
+                flex: 6,
                 child: CircularPercentIndicator(
                   percent: percent,
                   animation: true,
@@ -226,7 +221,7 @@ class CountDownTimerState extends State<CountDownTimer> {
                               startTimer(true);
                             },
                             child: Padding(
-                              padding: EdgeInsets.all(14.0),
+                              padding: EdgeInsets.all(10.0),
                               child: TextInfo(
                                 label: "Iniciar",
                                 fontSize: _labelSize,
