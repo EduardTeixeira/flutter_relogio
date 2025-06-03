@@ -21,6 +21,8 @@ class IconTimer extends StatelessWidget {
         return 'Iniciou o timer';
       case TimerAction.restore:
         return 'Reiniciou o timer';
+      case TimerAction.next:
+        return 'Próximo timer';
     }
   }
 
@@ -32,6 +34,8 @@ class IconTimer extends StatelessWidget {
         return 'Iniciar';
       case TimerAction.restore:
         return 'Reiniciar';
+      case TimerAction.next:
+        return 'Próximo';
     }
   }
 

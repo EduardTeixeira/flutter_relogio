@@ -1,1 +1,1 @@
-enum TimerAction { play, pause, restore }
+enum TimerAction { play, pause, restore, next }
