@@ -29,7 +29,7 @@ class CountDownTimerState extends State<CountDownTimer> {
   final TextEditingController restCtrl = TextEditingController(text: "45");
 
   Timer? timer;
-  bool timerActive = false;
+  bool timerRunning = false;
   bool timeToRest = true;
   int timeSeconds = 0;
 
@@ -71,31 +71,31 @@ class CountDownTimerState extends State<CountDownTimer> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children:
-                                timerActive
+                                timerRunning
                                     ? [
                                       IconTimer(
                                         icon: const Icon(Icons.pause),
                                         timerAction: TimerAction.pause,
-                                        onPressed: action,
+                                        onPressed: actions,
                                       ),
                                       const SizedBox(width: 10),
                                       IconTimer(
                                         icon: const Icon(Icons.refresh),
                                         timerAction: TimerAction.restore,
-                                        onPressed: action,
+                                        onPressed: actions,
                                       ),
                                       const SizedBox(width: 10),
                                       IconTimer(
                                         icon: const Icon(Icons.skip_next),
                                         timerAction: TimerAction.next,
-                                        onPressed: action,
+                                        onPressed: actions,
                                       ),
                                     ]
                                     : [
                                       IconTimer(
                                         icon: const Icon(Icons.play_arrow),
                                         timerAction: TimerAction.play,
-                                        onPressed: action,
+                                        onPressed: actions,
                                       ),
                                     ],
                           ),
@@ -192,15 +192,14 @@ class CountDownTimerState extends State<CountDownTimer> {
     print('object ---> dispose()...');
   }
 
-  void action(timerAction) {
+  void actions(timerAction) {
     switch (timerAction) {
       case TimerAction.play:
-        startTimer(true);
-        print('maindart TimerAction.play');
+        startTimer(timerRunning);
       case TimerAction.pause:
         pauseTimer();
       case TimerAction.restore:
-        print('maindart TimerAction.restore');
+        setTimeSeconds();
       case TimerAction.next:
         nextTimer();
     }
@@ -210,10 +209,8 @@ class CountDownTimerState extends State<CountDownTimer> {
     if (timer != null && timer!.isActive) {
       timer!.cancel();
       setState(() {
-        timerActive = false;
+        timerRunning = false;
       });
-      print("pauseTimer()");
-      //_isRunning = false; // Atualiza o estado para pausado
     }
   }
 
@@ -226,17 +223,25 @@ class CountDownTimerState extends State<CountDownTimer> {
     if (timer != null && timer!.isActive) {
       timer!.cancel();
     }
+
+    print('startTimer - isStart ${isStart}');
+
     if (isStart) {
-      timeToRest = true;
+      print('IF -> timerRunning ===> ${timerRunning}');
+      setTimeSeconds();
+    } else {
+      print('ELSE -> timerRunning ===> ${timerRunning}');
     }
-    setTimeSeconds();
-    timerActive = true;
+
+    timerRunning = true;
+
     timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       setState(() {
         if (timeSeconds > 0) {
           timeSeconds--;
           calculatePercent();
         } else {
+          print('proximo timer -> timer');
           nextTimer();
         }
       });
@@ -244,6 +249,7 @@ class CountDownTimerState extends State<CountDownTimer> {
   }
 
   void setTimeSeconds() {
+    print('set Time Seconds ()');
     if (timeToRest) {
       timeSeconds = int.parse(restCtrl.text);
       backgroundColor = LinearGradient(
